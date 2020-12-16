@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 LABEL maintainer="Taylor Otwell"
 
-#ARG WWWGROUP
+ARG WWWGROUP
 
 WORKDIR /var/www/html
 
@@ -36,14 +36,14 @@ RUN apt-get update \
 
 RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.0
 
-#RUN groupadd --force -g $WWWGROUP sail
-#RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
-#COPY start-container /usr/local/bin/start-container
-#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
-#RUN chmod +x /usr/local/bin/start-container
+RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 8000
 
-#ENTRYPOINT ["start-container"]
+ENTRYPOINT ["start-container"]
