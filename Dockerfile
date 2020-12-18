@@ -205,8 +205,6 @@ COPY cloud-run/deploy/conf.d/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-COPY .env /app/.env
-
 RUN chown -R www-data: /app
 
 #RUN chmod +rwx /app
