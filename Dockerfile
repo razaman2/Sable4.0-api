@@ -233,7 +233,7 @@ CMD ["npm", "run prod"]
 #
 #RUN php artisan config:cache
 
-EXPOSE 80
+#EXPOSE 80
 
 RUN chmod +x /etc/post_deploy.sh
 
