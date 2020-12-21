@@ -18,4 +18,4 @@
         return $request->user();
     });
 
-    Route::post('/docusign', 'Helpers\Controllers\DocusignController@send');
+    Route::post('/docusign/send', 'Helpers\Controllers\DocusignController@send');
