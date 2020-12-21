@@ -31,7 +31,7 @@
 
             $envelope = (new $template($docusign, $data))->configure($data);
 
-            $envelope->setStatus($request->input('sent'));
+            $envelope->setStatus('sent');
 
             $envelope->setEventNotification($this->callback());
 
