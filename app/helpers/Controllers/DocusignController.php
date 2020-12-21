@@ -106,6 +106,7 @@
                 'status' => $response->getStatus(),
                 'status_date_time' => $response->getStatusDateTime(),
                 'uri' => $response->getUri(),
+                'notifications' => \request()->input('data.contract.notifications')
                 //'notifications' => $this->notify($response),
                 //'url' => $this->url($response),
             ];
