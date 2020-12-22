@@ -113,7 +113,7 @@
                 }
 
                 if($notification === 'phone') {
-
+                    dump('testing');
                 }
 
                 return $notifications;
