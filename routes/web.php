@@ -101,6 +101,24 @@
         return Inertia::render('contract', ['url' => "{$links['url']}"]);
     });
 
+    Route::get('/signers', function(Request $request) {
+        return Inertia::render('signers');
+    });
+
+    Route::post('/signers', function(Request $request) {
+        $auth = DocusignAuthFactory::authenticate([
+            'Username' => env('DOCUSIGN_DEV_USERNAME'),
+            'Password' => env('DOCUSIGN_DEV_PASSWORD'),
+            'IntegratorKey' => env('DOCUSIGN_DEV_INTEGRATOR_KEY'),
+        ])->setHost(env('DOCUSIGN_DEV_HOST'));
+
+        $docusign = new Docusign($auth);
+
+        $signers = $docusign->recipients($request->input('id'));
+
+        return Inertia::render('signers', ['signers' => dump($signers)]);
+    });
+
     Route::post('/docusign', function() {
         $auth = DocusignAuthFactory::authenticate([
             'Username' => env('DOCUSIGN_DEV_USERNAME'),
