@@ -3,6 +3,7 @@
     namespace Helpers\Controllers;
 
     use App\Http\Controllers\Controller;
+    use App\Mail\DocusignAgreement;
     use DocuSign\eSign\Model\EnvelopeEvent;
     use DocuSign\eSign\Model\EventNotification;
     use DocuSign\eSign\Model\Signer;
@@ -10,6 +11,7 @@
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
     use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Mail;
 
     //use Helpers\Docusign\Docusign;
     //use Helpers\Docusign\TemplateFactory;
@@ -74,10 +76,10 @@
             ]);
         }
 
-        protected function notifySigner($auth, $id) {
+        protected function notifySigner($auth, $envelope) {
             $docusign = new Docusign($auth);
 
-            $recipients = $docusign->recipients($id);
+            $recipients = $docusign->recipients($envelope);
 
             /**
              * @var $currentRecipient Signer
@@ -100,44 +102,27 @@
 
             $signerNotifications = request()->input("data.contract.notifications.{$currentSigner['id']}", []);
 
-            array_walk($signerNotifications, function($notification) use ($currentSigner) {
-                dump("{$currentSigner['firstName']} {$currentSigner['lastName']} will be notified via {$notification}");
-            });
+            return array_reduce($signerNotifications, function($notifications, $notification) use ($currentSigner, $envelope) {
+                $property = request()->input('data.property', []);
 
-            //if($signers->getCurrentRoutingOrder() <= $signers->getRecipientCount()) {
-            //    $signer = array_reduce(request()->input('data.signers', []), function($current, $item) {
-            //        if($current['role'] === '') return $current;
-            //    });
-            //}
+                if($notification === 'email') {
+                    $status = Mail::to($currentSigner['email'])->send(
+                        new DocusignAgreement($currentSigner, $property, $this->url($envelope)));
 
-            // get template signers from docusign
-            // find the signer payload from the request body that matches the first docusign signer
-            // find the notification methods for the signer in payload contract notifications
-            // notify signer via the chosen notification methods.
+                    $notifications['email'] = $status;
+                }
 
-            //return array_reduce(request()->input('notifications'), function($accumulator, $current) use ($response) {
-            //    if(preg_match('/text/i', $current)) {
-            //        $text = new Text(new Mobile(request()->input('data.phone1')));
-            //        $text->setMessage(sprintf("Your agreement is ready to be signed. Please click the link below.\r\n\r\n%s", $this->url($response)));
-            //        $accumulator['text'] = $text->send()->status;
-            //    }
-            //    if(preg_match('/email/i', $current)) {
-            //        $view = view('customerEmails.eAgreement')->with([
-            //            'request' => request(),
-            //            'url' => $this->url($response),
-            //        ]);
-            //        $email = new Email(request()->input('data.email'));
-            //        $email->setSubject('Service Agreement')->setFrom(request()->input('company.name'))->setBody('Your agreement is ready to be signed.')->setHtml($view->render());
-            //        $accumulator['email'] = $email->send()->getMessage();
-            //    }
-            //
-            //    return $accumulator;
-            //}, []);
+                if($notification === 'phone') {
+
+                }
+
+                return $notifications;
+            }, ['id' => $currentSigner['id']]);
         }
 
-        //protected function url($response) {
-        //    return sprintf("%s/Docusign-Signing?account=%s&envelope=%s", env('FIREBASE_FUNCTIONS_URL'), request()->input('account'), $response->getEnvelopeId());
-        //}
+        protected function url($envelope) {
+            return sprintf("%s/Docusign-Signing?envelope=%s", env('FIREBASE_FUNCTIONS_URL'), $envelope);
+        }
 
         public function getTemplate(Request $request) {
             return TemplateFactory::getTemplate($request->input('companyId'))($request->input('data.contract.service'));

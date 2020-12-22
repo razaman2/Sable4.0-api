@@ -19,3 +19,5 @@
     });
 
     Route::post('/docusign/send', 'Helpers\Controllers\DocusignController@send');
+
+    Route::post('/docusign/view', 'Helpers\Controllers\DocusignController@view');
