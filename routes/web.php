@@ -337,7 +337,6 @@
         $envelope->setStatus('sent');
         $envelope->setEventNotification((new EventNotification())->setUrl(env('FIREBASE_FUNCTIONS_URL').'/Docusign-Status')->setEnvelopeEvents([
             (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
-            (new EnvelopeEvent())->setEnvelopeEventStatusCode("signed"),
             (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
         ]));
 
