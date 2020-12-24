@@ -72,7 +72,6 @@
         protected function callback() {
             return (new EventNotification())->setUrl(env('FIREBASE_FUNCTIONS_URL').'/Docusign-Status')->setEnvelopeEvents([
                 (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
-                (new EnvelopeEvent())->setEnvelopeEventStatusCode("signed"),
                 (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
             ]);
         }
