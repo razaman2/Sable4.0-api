@@ -1,5 +1,7 @@
 <?php
 
+    use DocuSign\eSign\Model\EnvelopeEvent;
+    use DocuSign\eSign\Model\EventNotification;
     use Helpers\ADC\ADCAuth;
     use Helpers\ADC\CustomerManagement\GetBestPractices;
     use Helpers\ADC\CustomerManagement\GetDevices;
@@ -333,6 +335,11 @@
 
         $envelope = $template->configure($data);
         $envelope->setStatus('sent');
+        $envelope->setEventNotification((new EventNotification())->setUrl(env('FIREBASE_FUNCTIONS_URL').'/Docusign-Status')->setEnvelopeEvents([
+            (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
+            (new EnvelopeEvent())->setEnvelopeEventStatusCode("signed"),
+            (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
+        ]));
 
         return Inertia::render('contract', ["contract" => json_decode($docusign->send($envelope))]);
     });
