@@ -6,12 +6,15 @@
     use App\Mail\DocusignAgreement;
     use DocuSign\eSign\Model\EnvelopeEvent;
     use DocuSign\eSign\Model\EventNotification;
+    use DocuSign\eSign\Model\RecipientEvent;
     use DocuSign\eSign\Model\Signer;
     use Helpers\Docusign\Auth\DocusignAuthFactory;
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
+    use Illuminate\Http\File;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Mail;
+    use Illuminate\Support\Facades\Storage;
 
     //use Helpers\Docusign\Docusign;
     //use Helpers\Docusign\TemplateFactory;
@@ -66,13 +69,17 @@
         public function download(Request $request) {
             $response = (new Docusign($this->auth($request)))->download($request->input('envelope'));
 
-            return base64_encode(file_get_contents($response->getFileInfo()));
+            //return base64_encode(file_get_contents($response->getFileInfo()));
+
+            return response()->file($response);
         }
 
         protected function callback() {
             return (new EventNotification())->setUrl(env('FIREBASE_FUNCTIONS_URL').'/Docusign-Status')->setEnvelopeEvents([
                 (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
                 (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
+            ])->setRecipientEvents([
+                (new RecipientEvent())->setRecipientEventStatusCode('completed')
             ]);
         }
 
