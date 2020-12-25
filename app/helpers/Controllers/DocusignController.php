@@ -11,6 +11,7 @@
     use Helpers\Docusign\Auth\DocusignAuthFactory;
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
+    use Helpers\Docusign\VIO\packets\SecurityPacket;
     use Illuminate\Http\File;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Mail;

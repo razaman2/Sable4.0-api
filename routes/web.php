@@ -2,6 +2,7 @@
 
     use DocuSign\eSign\Model\EnvelopeEvent;
     use DocuSign\eSign\Model\EventNotification;
+    use DocuSign\eSign\Model\RecipientEvent;
     use Helpers\ADC\ADCAuth;
     use Helpers\ADC\CustomerManagement\GetBestPractices;
     use Helpers\ADC\CustomerManagement\GetDevices;
@@ -338,6 +339,8 @@
         $envelope->setEventNotification((new EventNotification())->setUrl(env('FIREBASE_FUNCTIONS_URL').'/Docusign-Status')->setEnvelopeEvents([
             (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
             (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
+        ])->setRecipientEvents([
+            (new RecipientEvent())->setRecipientEventStatusCode('completed')
         ]));
 
         return Inertia::render('contract', ["contract" => json_decode($docusign->send($envelope))]);
