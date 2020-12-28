@@ -5,17 +5,14 @@
     use App\Http\Controllers\Controller;
     use App\Mail\DocusignAgreement;
     use DocuSign\eSign\Model\EnvelopeEvent;
+    use DocuSign\eSign\Model\EnvelopeSummary;
     use DocuSign\eSign\Model\EventNotification;
     use DocuSign\eSign\Model\RecipientEvent;
-    use DocuSign\eSign\Model\Signer;
     use Helpers\Docusign\Auth\DocusignAuthFactory;
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
-    use Helpers\Docusign\VIO\packets\SecurityPacket;
-    use Illuminate\Http\File;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Mail;
-    use Illuminate\Support\Facades\Storage;
 
     //use Helpers\Docusign\Docusign;
     //use Helpers\Docusign\TemplateFactory;
@@ -45,10 +42,8 @@
             $response = $docusign->send($envelope);
 
             if($response->getStatus() === 'sent') {
-                $this->notifySigner($auth, $response->getEnvelopeId());
+                return response()->json($this->createResponse($response));
             }
-
-            return response()->json($this->createResponse($response));
         }
 
         protected function auth(Request $request) {
@@ -80,52 +75,31 @@
                 (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
                 (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
             ])->setRecipientEvents([
-                (new RecipientEvent())->setRecipientEventStatusCode('completed')
+                (new RecipientEvent())->setRecipientEventStatusCode('completed'),
             ]);
         }
 
-        protected function notifySigner($auth, $envelope) {
-            $docusign = new Docusign($auth);
+        protected function notifySigner($envelope) {
+            return array_reduce(request()->input('data.signers', []), function($status, $current) use ($envelope) {
+                $notifications = request()->input("data.contract.notifications.{$current['id']}", []);
 
-            $recipients = $docusign->recipients($envelope);
-
-            /**
-             * @var $currentRecipient Signer
-             */
-            $currentRecipient = array_reduce($recipients->getSigners(), function($recipient, Signer $current) use ($recipients) {
-                if($current->getRoutingOrder() === $recipients->getCurrentRoutingOrder()) {
-                    $recipient = $current;
-                }
-
-                return $recipient;
-            });
-
-            $currentSigner = array_reduce(request()->input('data.signers', []), function($signer, $current) use ($currentRecipient) {
-                if($current['role'] === $currentRecipient->getRoleName()) {
-                    $signer = $current;
-                }
-
-                return $signer;
-            });
-
-            $signerNotifications = request()->input("data.contract.notifications.{$currentSigner['id']}", []);
-
-            return array_reduce($signerNotifications, function($notifications, $notification) use ($currentSigner, $envelope) {
                 $property = request()->input('data.property', []);
 
-                if($notification === 'email') {
-                    $status = Mail::to($currentSigner['email'])->send(
-                        new DocusignAgreement($currentSigner, $property, $this->url($envelope)));
+                if(in_array('email', $notifications)) {
+                    $success = Mail::to($current['email'])->send(new DocusignAgreement($current, $property, $this->url($envelope)));
 
-                    $notifications['email'] = $status;
+                    $status[$current['id']]['email'] = is_null($success) ? $current['email'] : false;
                 }
 
-                if($notification === 'phone') {
-                    dump('phone not implemented!');
+                if(in_array('phone', $notifications)) {
+                    dump('not yet implemented!');
+                    $status[$current['id']]['phone'] = $current['phone'];
                 }
 
-                return $notifications;
-            }, ['id' => $currentSigner['id']]);
+                $status[$current['id']]['signed'] = false;
+
+                return $status;
+            });
         }
 
         protected function url($envelope) {
@@ -136,7 +110,7 @@
             return TemplateFactory::getTemplate($request->input('companyId'))($request->input('data.contract.service'));
         }
 
-        public function createResponse($response) {
+        public function createResponse(EnvelopeSummary $response) {
             return [
                 'bulk_envelope_status' => $response->getBulkEnvelopeStatus(),
                 'envelope_id' => $response->getEnvelopeId(),
@@ -144,9 +118,7 @@
                 'status' => $response->getStatus(),
                 'status_date_time' => $response->getStatusDateTime(),
                 'uri' => $response->getUri(),
-                'notifications' => \request()->input('data.contract.notifications')
-                //'notifications' => $this->notify($response),
-                //'url' => $this->url($response),
+                'notifications' => $this->notifySigner($response->getEnvelopeId()),
             ];
         }
     }
