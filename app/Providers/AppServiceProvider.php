@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Helpers\ADC\ADCAuth;
+use Helpers\Docusign\Auth\DocusignAuthFactory;
+use Helpers\Docusign\Docusign;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;
 
@@ -22,6 +24,16 @@ class AppServiceProvider extends ServiceProvider
                 request()->input('credentials.branchID', 0),
                 request()->input('credentials.twoFactor', '')
             );
+        });
+
+        $this->app->bind(Docusign::class, function() {
+            return new Docusign(request()->input('test') ? DocusignAuthFactory::authenticate([
+                'Username' => env('DOCUSIGN_DEV_USERNAME'),
+                'Password' => env('DOCUSIGN_DEV_PASSWORD'),
+                'IntegratorKey' => env('DOCUSIGN_DEV_INTEGRATOR_KEY'),
+            ])->setHost(env('DOCUSIGN_DEV_HOST')) :
+
+                DocusignAuthFactory::authenticate(request()->input('auth'))->setHost(env('DOCUSIGN_PRO_HOST')));
         });
 
         $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
