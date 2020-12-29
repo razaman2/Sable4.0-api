@@ -8,6 +8,7 @@
     use DocuSign\eSign\Model\EnvelopeSummary;
     use DocuSign\eSign\Model\EventNotification;
     use DocuSign\eSign\Model\RecipientEvent;
+    use DocuSign\eSign\Model\Signer;
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
     use Illuminate\Http\Request;
@@ -34,13 +35,12 @@
         }
 
         public function view(Request $request) {
-            $response = app()->make(Docusign::class)->view($request->input('envelope'), $request->input('sequence', 0));
+            $response = app()->make(Docusign::class)->view($request->input('envelope'), $request->input('role'));
 
             return response()->json(['url' => $response->getUrl()]);
         }
 
         public function download(Request $request) {
-            /** @var \SplFileObject $file */
             return app()->make(Docusign::class)->download($request->input('envelope'));
 
             //return base64_encode(file_get_contents($response->getFileInfo()));
@@ -56,13 +56,26 @@
         }
 
         protected function notifySigner($envelope) {
-            return array_reduce(request()->input('data.signers', []), function($status, $current) use ($envelope) {
+            $signers = app()->make(Docusign::class)->recipients($envelope);
+
+            return array_reduce(request()->input('data.signers', []), function($status, $current) use ($envelope, $signers) {
                 $notifications = request()->input("data.contract.notifications.{$current['id']}", []);
 
                 $property = request()->input('data.property', []);
 
+                /** @var Signer $signer */
+                $viewer = array_reduce($signers->getSigners(), function($viewer, Signer $signer) use ($current) {
+                    if($signer->getRoleName() === $current['role']) {
+                        $viewer = $signer;
+                    }
+
+                    return $viewer;
+                });
+
                 if(in_array('email', $notifications)) {
-                    $success = Mail::to($current['email'])->send(new DocusignAgreement($current, $property, $this->getSigningLink($envelope)));
+                    $success = Mail::to($current['email'])->send(
+                        new DocusignAgreement($current, $property, "{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}")
+                    );
 
                     $status[$current['id']]['email'] = is_null($success) ? $current['email'] : false;
                 }

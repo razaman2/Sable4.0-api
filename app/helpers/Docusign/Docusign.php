@@ -11,6 +11,7 @@
     use DocuSign\eSign\Configuration;
     use DocuSign\eSign\Model\EnvelopeDefinition;
     use DocuSign\eSign\Model\RecipientViewRequest;
+    use DocuSign\eSign\Model\Signer;
 
     class Docusign
     {
@@ -40,10 +41,15 @@
             }
         }
 
-        public function view(string $envelope, int $sequence) {
-            $signers = $this->recipients($envelope)->getSigners();
+        public function view(string $envelope, string $role) {
+            /** @var Signer $signer */
+            $viewer = array_reduce($this->recipients($envelope)->getSigners(), function($viewer, Signer $signer) use ($role) {
+                if($signer->getRoleName() === $role) {
+                    $viewer = $signer;
+                }
 
-            $viewer = $signers[$sequence];
+                return $viewer;
+            });
 
             $view = (new RecipientViewRequest())
                 ->setUserName($viewer->getName())
