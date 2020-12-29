@@ -9,8 +9,10 @@
     use DocuSign\eSign\Model\EventNotification;
     use DocuSign\eSign\Model\RecipientEvent;
     use DocuSign\eSign\Model\Signer;
+    use Exception;
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
+    use Helpers\Text\Text;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Mail;
 
@@ -73,15 +75,19 @@
                 });
 
                 if(in_array('email', $notifications)) {
-                    $success = Mail::to($current['email'])->send(
-                        new DocusignAgreement($current, $property, "{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}")
-                    );
+                    $success = Mail::to($current['email'])->send(new DocusignAgreement($current, $property, "{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}"));
 
                     $status[$current['id']]['email'] = is_null($success) ? $current['email'] : false;
                 }
 
                 if(in_array('phone', $notifications)) {
-                    $status[$current['id']]['phone'] = $current['phone'];
+                    try {
+                        $success = (new Text($current['phone']))->send("{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}");
+                    } catch(Exception $e) {
+                        $success = false;
+                    }
+
+                    $status[$current['id']]['phone'] = preg_match('/queued/', $success) ? $current['phone'] : false;
                 }
 
                 $status[$current['id']]['signed'] = false;
