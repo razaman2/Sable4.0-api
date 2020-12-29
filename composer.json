@@ -19,8 +19,8 @@
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "inertiajs/inertia-laravel": "^0.3.3",
-        "laravel/framework": "^8.12",
+        "inertiajs/inertia-laravel": "^v0.3.5",
+        "laravel/framework": "^v8.20.1",
         "laravel/telescope": "^4.3",
         "laravel/tinker": "^2.5",
         "wsdltophp/packagebase": "^2.2.0",
@@ -29,11 +29,11 @@
         "mailgun/mailgun-php": "^3.2.0"
     },
     "require-dev": {
-        "facade\/ignition": "^2.5",
-        "fakerphp\/faker": "^1.9.1",
-        "mockery\/mockery": "^1.4.2",
-        "nunomaduro\/collision": "^5.0",
-        "phpunit\/phpunit": "^9.3.3",
+        "facade/ignition": "^2.5.8",
+        "fakerphp/faker": "^1.9.1",
+        "mockery/mockery": "^1.4.2",
+        "nunomaduro/collision": "^5.0",
+        "phpunit/phpunit": "^9.3.3",
         "laravel/sail": "^0.0.5"
     },
     "config": {
