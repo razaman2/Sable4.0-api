@@ -8,13 +8,13 @@
     {
         protected static $templates = [
             'UOoG7r1DgErDtGIZxTt5' => [
-                'Security Packet' => SecurityPacket::class
+                'security packet' => SecurityPacket::class
             ]
         ];
 
         public static function getTemplate($id) {
             return function($name) use ($id) {
-                return self::$templates[$id][$name];
+                return self::$templates[$id][strtolower($name)];
             };
         }
     }

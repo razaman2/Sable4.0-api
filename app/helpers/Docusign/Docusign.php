@@ -11,21 +11,18 @@
     use DocuSign\eSign\Configuration;
     use DocuSign\eSign\Model\EnvelopeDefinition;
     use DocuSign\eSign\Model\RecipientViewRequest;
-    use DocuSign\eSign\Model\TemplateRole;
 
     class Docusign
     {
         protected $authentication;
 
-        protected $callback;
-
-        protected $roles = [];
+        protected $loginInformation;
 
         public function __construct(Configuration $config) {
             $this->authentication = new AuthenticationApi(new ApiClient($config));
         }
 
-        public function download($envelope, $id = 'combined') {
+        public function download(string $envelope, $id = 'combined') {
             try {
                 return (new EnvelopesApi($this->authentication->getApiClient()))
                     ->getDocument($this->account(), $id, $envelope);
@@ -34,7 +31,7 @@
             }
         }
 
-        public function get($envelope) {
+        public function get(string $envelope) {
             try {
                 return (new EnvelopesApi($this->authentication->getApiClient()))
                     ->getEnvelope($this->account(), $envelope);
@@ -43,7 +40,7 @@
             }
         }
 
-        public function view($envelope, $sequence) {
+        public function view(string $envelope, int $sequence) {
             $signers = $this->recipients($envelope)->getSigners();
 
             $viewer = $signers[$sequence];
@@ -63,7 +60,7 @@
             }
         }
 
-        public function recipients($envelope) {
+        public function recipients(string $envelope) {
             try {
                 return (new EnvelopesApi($this->authentication->getApiClient()))
                     ->listRecipients($this->account(), $envelope);
@@ -99,20 +96,13 @@
             }
         }
 
-        public function role($name) : TemplateRole {
-            array_push($this->roles, new TemplateRole(['client_user_id' => time()]));
-            return $this->roles[(count($this->roles) - 1)]->setRoleName($name);
-        }
-
-        public function notification($callback) {
-            $this->callback = $callback;
-            return $this;
-        }
-
         protected function account() {
             try {
-                return $this->authentication->login(new LoginOptions())
-                    ->getLoginAccounts()[0]->getAccountId();
+                if(!$this->loginInformation) {
+                    $this->loginInformation = $this->authentication->login(new LoginOptions());
+                }
+
+                return $this->loginInformation->getLoginAccounts()[0]->getAccountId();
             } catch(ApiException $e) {
                 throw new \Exception(json_encode($e->getResponseBody()));
             }
