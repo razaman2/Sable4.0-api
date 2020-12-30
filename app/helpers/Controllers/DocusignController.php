@@ -43,9 +43,9 @@
         }
 
         public function download(Request $request) {
-            return app()->make(Docusign::class)->download($request->input('envelope'));
+            $response = app()->make(Docusign::class)->download($request->input('envelope'));
 
-            //return base64_encode(file_get_contents($response->getFileInfo()));
+            return base64_encode(file_get_contents($response->getFileInfo()));
         }
 
         protected function getNotifications() : EventNotification {
