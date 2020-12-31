@@ -1,7 +1,5 @@
 FROM php:7.4-fpm
 
-USER root
-
 RUN apt update -y
 RUN apt install g++ gcc libxml2 libxslt-dev git npm zip unzip nginx -y
 RUN docker-php-ext-install pdo pdo_mysql soap
@@ -19,8 +17,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN chown -R www-data: /app
 
 RUN cd /app && /usr/local/bin/composer install --no-dev
-
-RUN npm install -g node@latest
 
 RUN cd /app && npm install
 
