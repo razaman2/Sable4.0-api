@@ -41,6 +41,8 @@ COPY cloud-run/deploy/conf.d/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
+RUN npm install node@latest
+
 RUN chown -R www-data: /app
 
 RUN cd /app && /usr/local/bin/composer install --no-dev
