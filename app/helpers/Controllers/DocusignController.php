@@ -3,21 +3,20 @@
     namespace Helpers\Controllers;
 
     use App\Http\Controllers\Controller;
-    use App\Mail\DocusignAgreement;
+    use App\Notifications\DocusignAgreement;
     use DocuSign\eSign\Model\EnvelopeEvent;
     use DocuSign\eSign\Model\EnvelopeSummary;
     use DocuSign\eSign\Model\EventNotification;
     use DocuSign\eSign\Model\RecipientEvent;
-    use DocuSign\eSign\Model\Signer;
-    use Exception;
     use Helpers\Docusign\Docusign;
     use Helpers\Docusign\TemplateFactory;
-    use Helpers\Text\Text;
     use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Mail;
+    use Illuminate\Notifications\Notifiable;
 
     class DocusignController extends Controller
     {
+        use Notifiable;
+
         public function send(Request $request) {
             $docusign = app()->make(Docusign::class);
 
@@ -60,48 +59,33 @@
         protected function notifySigner($envelope) {
             $signers = app()->make(Docusign::class)->recipients($envelope);
 
-            return array_reduce(request()->input('data.signers', []), function($status, $current) use ($envelope, $signers) {
-                $notifications = request()->input("data.contract.notifications.{$current['id']}", []);
+            return array_reduce(request()->input('data.signers', []), function($status, $signer) use ($envelope, $signers) {
+                $notification = new DocusignAgreement($signers, $signer, $envelope);
 
-                $property = request()->input('data.property', []);
+                $this->notifyNow($notification);
 
-                /** @var Signer $signer */
-                $viewer = array_reduce($signers->getSigners(), function($viewer, Signer $signer) use ($current) {
-                    if($signer->getRoleName() === $current['role']) {
-                        $viewer = $signer;
-                    }
+                //if(in_array('email', $notifications)) {
+                //    $success = Mail::to($current['email'])->send(new DocusignAgreement($current, $property, "{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}"));
+                //
+                //    $status[$current['id']]['email'] = is_null($success) ? $current['email'] : false;
+                //}
 
-                    return $viewer;
-                });
+                //if(in_array('phone', $notifications)) {
+                //    try {
+                //        $success = (new Text($current['phone']))->send("{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}");
+                //    } catch(Exception $e) {
+                //        $success = false;
+                //    }
+                //
+                //    $status[$current['id']]['phone'] = preg_match('/queued/', $success) ? $current['phone'] : false;
+                //}
 
-                if(in_array('email', $notifications)) {
-                    $success = Mail::to($current['email'])->send(new DocusignAgreement($current, $property, "{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}"));
+                $status[$signer['id']] = $notification->getStatus($signer['id']);
 
-                    $status[$current['id']]['email'] = is_null($success) ? $current['email'] : false;
-                }
-
-                if(in_array('phone', $notifications)) {
-                    try {
-                        $success = (new Text($current['phone']))->send("{$this->getSigningLink($envelope)}&role={$viewer->getRoleName()}");
-                    } catch(Exception $e) {
-                        $success = false;
-                    }
-
-                    $status[$current['id']]['phone'] = preg_match('/queued/', $success) ? $current['phone'] : false;
-                }
-
-                $status[$current['id']]['signed'] = false;
+                //$status[$signer['id']]['signed'] = false;
 
                 return $status;
             });
-        }
-
-        protected function getSigningLink($envelope) : string {
-            return sprintf("%s/Docusign-Signing?envelope=%s", env('FIREBASE_FUNCTIONS_URL'), $envelope);
-        }
-
-        public function getTemplate() {
-            return call_user_func(TemplateFactory::getTemplate(request()->input('companyId')), request()->input('data.contract.service'));
         }
 
         public function createResponse(EnvelopeSummary $response) : array {
@@ -114,5 +98,21 @@
                 'uri' => $response->getUri(),
                 'notifications' => ($response->getStatus() === 'sent') ? $this->notifySigner($response->getEnvelopeId()) : [],
             ];
+        }
+
+        public function getSigningLink($envelope) : string {
+            return sprintf("%s/Docusign-Signing?envelope=%s", env('FIREBASE_FUNCTIONS_URL'), $envelope);
+        }
+
+        public function getTemplate() {
+            return call_user_func(TemplateFactory::getTemplate(request()->input('companyId')), request()->input('data.contract.service'));
+        }
+
+        public function getNotificationMethods($user) {
+            return request()->input("data.contract.notifications.{$user['id']}", []);
+        }
+
+        public function getPropertyAddress() {
+            return request()->input('data.property', []);
         }
     }
