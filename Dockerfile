@@ -224,7 +224,7 @@ RUN chown -R www-data: /app
 
 RUN cd /app && /usr/local/bin/composer install --no-dev
 
-#RUN npm install
+RUN npm install
 #
 #RUN cd /app && npm run prod
 #CMD ["npm", "run prod"]

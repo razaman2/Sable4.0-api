@@ -1,13 +1,12 @@
 #!/bin/sh
 
-echo "current working directory is currently."
-pwd
 cd /app || exit
-pwd
 php artisan env
-npm -v
-node -v
-env
+
+npm run prod
+
+php artisan telescope:install
+php artisan migrate
 
 
 # start the application
