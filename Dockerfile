@@ -45,7 +45,7 @@ RUN chown -R www-data: /app
 
 RUN cd /app && /usr/local/bin/composer install --no-dev
 
-RUN cd /app && npm install --only=production
+RUN cd /app && npm install
 
 RUN chmod +x /etc/post_deploy.sh
 
