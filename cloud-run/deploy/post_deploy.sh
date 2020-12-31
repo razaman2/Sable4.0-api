@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# update application cache
-php artisan optimize
+echo "current working directory is currently."
+echo pwd
 
 # start the application
 php-fpm -D && nginx -g "daemon off;"
