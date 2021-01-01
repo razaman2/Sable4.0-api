@@ -26,4 +26,4 @@ RUN chmod +x /etc/post_deploy.sh
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
 
-RUN php artisan migrate -y
+RUN php artisan migrate --force
