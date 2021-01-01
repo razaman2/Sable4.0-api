@@ -22,8 +22,6 @@ RUN composer install --no-dev
 
 RUN npm install
 
-RUN npm run prod
-
 RUN chmod +x /etc/post_deploy.sh
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
