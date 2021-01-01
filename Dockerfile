@@ -1,4 +1,4 @@
-FROM php:8-fpm
+FROM php:7.4-fpm
 
 RUN apt update -y
 RUN apt install g++ gcc libxml2 libxslt-dev git npm zip unzip nginx -y
@@ -25,5 +25,5 @@ RUN npm install
 RUN chmod +x /etc/post_deploy.sh
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
-RUN env
+
 #RUN php artisan migrate --force
