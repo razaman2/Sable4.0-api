@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:8-fpm
 
 RUN apt update -y
 RUN apt install g++ gcc libxml2 libxslt-dev git npm zip unzip nginx -y
@@ -18,7 +18,7 @@ RUN chown -R www-data: /app
 
 WORKDIR /app
 
-RUN composer install --no-dev
+RUN composer install --no-dev --ignore-platform-reqs
 
 RUN npm install
 
