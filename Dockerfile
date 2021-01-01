@@ -16,10 +16,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN chown -R www-data: /app
 
-RUN cd /app && /usr/local/bin/composer install --no-dev
+WORKDIR /app
 
-RUN cd /app && npm install
+RUN composer install --no-dev
+
+RUN npm install
+
+RUN npm run prod
 
 RUN chmod +x /etc/post_deploy.sh
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
+
+RUN php artisan migrate
