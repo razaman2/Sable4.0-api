@@ -25,5 +25,5 @@ RUN npm install
 RUN chmod +x /etc/post_deploy.sh
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
-
+RUN env
 RUN php artisan migrate --force
