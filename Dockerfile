@@ -22,10 +22,6 @@ RUN composer install --no-dev --ignore-platform-reqs
 
 RUN npm install
 
-RUN php artisan config:clear
-
-RUN php artisan config:cache
-
 #RUN php artisan migrate --force
 
 RUN chmod +x /etc/post_deploy.sh
