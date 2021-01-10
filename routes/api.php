@@ -18,8 +18,15 @@
         return $request->user();
     });
 
-    Route::post('/docusign/send', 'Helpers\Controllers\DocusignController@send');
+    Route::prefix('docusign')->group(function() {
+        Route::post('/send', 'Helpers\Controllers\DocusignController@send');
 
-    Route::post('/docusign/view', 'Helpers\Controllers\DocusignController@view');
+        Route::post('/view', 'Helpers\Controllers\DocusignController@view');
 
-    Route::post('/docusign/download', 'Helpers\Controllers\DocusignController@download');
+        Route::post('/download', 'Helpers\Controllers\DocusignController@download');
+    });
+
+    Route::prefix('phone')->group(function() {
+
+        Route::post('/validate', 'Helpers\Controllers\TwilioController@lookup');
+    });
