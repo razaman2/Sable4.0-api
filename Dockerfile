@@ -24,7 +24,7 @@ RUN npm install
 
 #RUN npm run prod
 
-RUN php artisan migrate --force
+#RUN php artisan migrate --force
 
 RUN chmod +x /etc/post_deploy.sh
 
