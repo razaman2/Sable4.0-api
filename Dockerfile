@@ -22,6 +22,8 @@ RUN composer install --no-dev --ignore-platform-reqs
 
 RUN npm install
 
+RUN php artisan telescope:publish
+
 #RUN npm run prod
 
 #RUN php artisan migrate --force
