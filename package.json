@@ -8,19 +8,19 @@
         "prod": "mix --production"
     },
     "devDependencies": {
-        "@vue/compiler-sfc": "^3.0.3",
-        "laravel-mix": "^6.0.0-beta.14",
-        "postcss": "^8.1.10",
-        "resolve-url-loader": "^3.1.0",
-        "vue-loader": "^16.0.0-beta.9"
+        "@vue/compiler-sfc": "^3.0.5",
+        "laravel-mix": "^6.0.6",
+        "postcss": "^8.2.2",
+        "resolve-url-loader": "^3.1.2",
+        "vue-loader": "^16.1.2"
     },
     "dependencies": {
-        "@inertiajs/inertia": "^0.6.3",
-        "@inertiajs/inertia-vue3": "^0.2.2",
-        "@inertiajs/progress": "^0.2.2",
-        "axios": "^0.19",
-        "cross-env": "^7.0",
-        "lodash": "^4.17.19",
-        "vue": "^3.0.3"
+        "@inertiajs/inertia": "^0.8.2",
+        "@inertiajs/inertia-vue3": "^0.3.4",
+        "@inertiajs/progress": "^0.2.4",
+        "axios": "^0.21.1",
+        "cross-env": "^7.0.3",
+        "lodash": "^4.17.20",
+        "vue": "^3.0.5"
     }
 }
