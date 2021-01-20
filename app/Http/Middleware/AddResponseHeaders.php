@@ -17,7 +17,6 @@
         protected function addHeaders(Request $request, Response $response) : Response {
             $response->headers->add([
                 'Content-Security-Policy' => 'upgrade-insecure-requests',
-                'Sable-Awesome-System' => 'testing-headers'
             ]);
 
             return $response;
