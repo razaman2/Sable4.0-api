@@ -33,7 +33,7 @@ RUN php artisan telescope:publish
 #RUN php artisan migrate --force
 
 RUN chmod +x /etc/post_deploy.sh
-RUN chmod -R 775 storage/logs
+RUN chmod -R 0777 storage/logs
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
 
