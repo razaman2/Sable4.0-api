@@ -31,3 +31,5 @@ RUN php artisan telescope:publish
 RUN chmod +x /etc/post_deploy.sh
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
+
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/localhost.key -out /etc/ssl/certs/localhost.crt -config cloud-run/deploy/localhost.conf
