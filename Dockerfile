@@ -12,10 +12,6 @@ COPY cloud-run/deploy/local.ini /usr/local/etc/php/local.ini
 
 COPY cloud-run/deploy/conf.d/nginx.conf /etc/nginx/nginx.conf
 
-#ssl setup
-COPY cloud-run/deploy/localhost.crt /etc/ssl/certs/localhost.crt
-COPY cloud-run/deploy/localhost.key /etc/ssl/private/localhost.key
-
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN chown -R www-data: /app
