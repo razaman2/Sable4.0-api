@@ -30,7 +30,7 @@ RUN php artisan telescope:publish
 
 #RUN npm run prod
 
-#RUN php artisan migrate --force
+RUN php artisan migrate --force
 
 RUN chmod +x /etc/post_deploy.sh
 RUN chmod -R 0777 storage/logs
