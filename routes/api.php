@@ -27,6 +27,7 @@
     });
 
     Route::prefix('phone')->group(function() {
-
         Route::post('/validate', 'Helpers\Controllers\TwilioController@lookup');
+
+        //Route::post('/send', 'Helpers\Controllers\TwilioController@text');
     });

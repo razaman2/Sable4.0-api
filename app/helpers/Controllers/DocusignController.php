@@ -101,7 +101,9 @@
         }
 
         public function getSigningLink($envelope) : string {
-            return sprintf("%s/Docusign-Signing?envelope=%s", env('FIREBASE_FUNCTIONS_URL'), $envelope);
+            $link = sprintf("%s/Docusign-Signing?envelope=%s", env('FIREBASE_FUNCTIONS_URL'), $envelope);
+
+            return request()->input('test') ? "{$link}&test=true" : $link;
         }
 
         public function getTemplate() {
