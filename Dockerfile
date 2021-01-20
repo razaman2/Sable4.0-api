@@ -12,10 +12,13 @@ COPY cloud-run/deploy/local.ini /usr/local/etc/php/local.ini
 
 COPY cloud-run/deploy/conf.d/nginx.conf /etc/nginx/nginx.conf
 
+#ssl setup
+COPY cloud-run/deploy/localhost.crt /etc/ssl/certs/localhost.crt
+COPY cloud-run/deploy/localhost.key /etc/ssl/private/localhost.key
+
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN chown -R www-data: /app
-RUN chmod -R 0777 /app/storage/logs
 
 WORKDIR /app
 
@@ -26,6 +29,7 @@ RUN npm install
 #RUN npm run prod
 
 RUN chmod +x /etc/post_deploy.sh
+RUN chmod -R 0777 storage/logs
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
 
