@@ -29,6 +29,6 @@ RUN chmod -R 0777 storage/logs
 
 ENTRYPOINT ["/etc/post_deploy.sh"]
 
-RUN php artisan migrate --force
+CMD php artisan migrate --force
 
 #RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/localhost.key -out /etc/ssl/certs/localhost.crt -config cloud-run/deploy/localhost.conf
