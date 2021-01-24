@@ -31,3 +31,9 @@
 
         //Route::post('/send', 'Helpers\Controllers\TwilioController@text');
     });
+
+    Route::prefix('credit')->group(function() {
+        Route::post('/new', 'Helpers\Controllers\CreditController@pullNew');
+
+        Route::post('/previous', 'Helpers\Controllers\CreditController@pullPrevious');
+    });
