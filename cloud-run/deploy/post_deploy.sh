@@ -9,7 +9,7 @@ sed -i "s,SABLE_APP_URL,${APP_URL},g" /etc/nginx/nginx.conf
 # start the application
 php-fpm -D && nginx -g "daemon off;"
 
-#CMD npm run prod
+#npm run prod
 php artisan migrate --force
 
 exec "$@"
