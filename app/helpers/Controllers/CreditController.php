@@ -1,5 +1,5 @@
 <?php
-    namespace App\helpers\Controllers;
+    namespace Helpers\Controllers;
 
     use App\Http\Controllers\Controller;
     use Helpers\Credit\CreditData;
