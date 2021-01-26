@@ -8,6 +8,7 @@
     abstract class CreditData
     {
         protected $data = [];
+        protected $type = 'score';
         protected CreditCredentials $credentials;
 
         public function __construct($data) {
@@ -20,8 +21,16 @@
             $this->data['PASS'] = $pass;
         }
 
-        public function credentials($data) {
+        public function auth($data) {
             $this->credentials = (new CreditCredentials($data));
+        }
+
+        public function data($data) {
+            (new MethodInvoker($this))->invoke($data);
+        }
+
+        public function type($type) {
+            $this->type = $type;
         }
 
         public function bureau($bureau) {
@@ -34,6 +43,10 @@
 
         public function getBureau() {
             return $this->data['BUREAU'];
+        }
+
+        public function getType() {
+            return $this->type;
         }
 
         protected abstract function default();

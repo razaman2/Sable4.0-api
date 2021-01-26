@@ -1,7 +1,7 @@
 FROM php:8-fpm
 
 RUN apt update -y
-RUN apt install g++ gcc libxml2 libxslt-dev git npm zip unzip nginx -y
+RUN apt install g++ gcc libxml2 libxslt-dev npm zip unzip nginx -y
 RUN docker-php-ext-install pdo pdo_mysql soap
 
 COPY . /app

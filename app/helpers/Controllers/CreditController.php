@@ -2,7 +2,6 @@
     namespace Helpers\Controllers;
 
     use App\Http\Controllers\Controller;
-    use Helpers\Credit\CreditData;
     use Helpers\Credit\CreditFactory;
     use Helpers\Credit\PullNew;
     use Helpers\Credit\PullPrevious;
@@ -15,10 +14,7 @@
 
             $operation = CreditFactory::find($credit);
 
-            dump($operation);
-            dump($operation->execute());
-
-            return response()->json($credit->getData());
+            return response()->json($operation->execute()->getScore());
         }
 
         public function pullPrevious(Request $request) {
@@ -26,9 +22,12 @@
 
             $operation = CreditFactory::find($credit);
 
-            dump($operation);
-            dump($operation->execute());
-
-            return response()->json($credit->getData());
+            if($credit->getType() === 'score') {
+                return response()->json($operation->execute()->getScore());
+            } elseif($credit->getType() === 'tty') {
+                return response()->json($operation->execute()->getTty());
+            } elseif($credit->getType() === 'html') {
+                return response()->json($operation->execute()->getHtml());
+            }
         }
     }
