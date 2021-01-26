@@ -2,8 +2,14 @@
 
     namespace Helpers\Credit;
 
+    use App\helpers\Credit\CreditAddress;
+    use App\helpers\Credit\CreditContact;
+
     class PullNew extends CreditData
     {
+        protected CreditContact $contact;
+        protected CreditAddress $address;
+
         public function default() {
             $this->pass("2");
             $this->process("PCCREDIT");
@@ -11,38 +17,22 @@
         }
 
         public function process($process) {
-            $this->requestData['PROCESS'] = $process;
+            $this->data['PROCESS'] = $process;
         }
 
         public function product($product) {
-            $this->requestData['PRODUCT'] = $product;
+            $this->data['PRODUCT'] = $product;
         }
 
-        public function name($name) {
-            $this->requestData['NAME'] = $name;
+        public function contact($data) {
+            $this->contact = new CreditContact($data);
         }
 
-        public function address1($address1) {
-            $this->requestData['ADDRESS'] = $address1;
+        public function address($data) {
+            $this->address = new CreditAddress($data);
         }
 
-        public function city($city) {
-            $this->requestData['CITY'] = $city;
-        }
-
-        public function state($state) {
-            $this->requestData['STATE'] = $state;
-        }
-
-        public function zip($zip) {
-            $this->requestData['ZIP'] = $zip;
-        }
-
-        public function ssn($ssn) {
-            $this->requestData['SSN'] = $ssn;
-        }
-
-        public function dob($dob) {
-            $this->requestData['DOB'] = $dob;
+        public function getData() {
+            return array_merge(parent::getData(), $this->contact->getData(), $this->address->getData());
         }
     }

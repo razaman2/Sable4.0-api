@@ -38,7 +38,6 @@
             try {
                 $this->response = simplexml_load_string($response, null, LIBXML_NOCDATA);
             } catch(\Exception $e) {
-                info($response);
                 if(preg_match('/Login was not successful/', $response)) {
                     throw new \Exception("The Provided User Credentials Are Invalid...");
                 } else if(preg_match('/UNAUTHORIZED METHOD OF ACCESS/', $response)) {

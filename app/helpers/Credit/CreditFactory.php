@@ -19,6 +19,6 @@
                 throw new Exception("Invalid Credit Bureau {$bureau}, must be one of ".implode(", ", ['EFX, TU, XPN']));
             }
 
-            return new static::$bureaus[$bureau]($credit);
+            return new static::$bureaus[strtolower($bureau)]($credit);
         }
     }

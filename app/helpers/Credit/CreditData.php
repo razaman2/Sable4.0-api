@@ -2,45 +2,39 @@
 
     namespace Helpers\Credit;
 
+    use App\helpers\Credit\CreditCredentials;
     use Helpers\Builder\MethodInvoker;
 
-    class CreditData
+    abstract class CreditData
     {
-        protected $data;
-        protected $requestData = [];
+        protected $data = [];
+        protected CreditCredentials $credentials;
 
         public function __construct($data) {
-            $this->data = $data;
-
             $this->default();
 
             (new MethodInvoker($this))->invoke($data);
         }
 
         public function pass($pass) {
-            $this->requestData['PASS'] = $pass;
+            $this->data['PASS'] = $pass;
         }
 
-        public function username($username) {
-            $this->requestData['ACCOUNT'] = $username;
+        public function credentials($data) {
+            $this->credentials = (new CreditCredentials($data));
         }
 
-        public function password($password) {
-            $this->requestData['PASSWD'] = $password;
-        }
-
-        public function bureau(BureauEnum $bureau) {
-            $this->requestData['BUREAU'] = $bureau;
+        public function bureau($bureau) {
+            $this->data['BUREAU'] = strtoupper($bureau);
         }
 
         public function getData() {
-            return $this->requestData;
+            return array_merge($this->data, $this->credentials->getData());
         }
 
         public function getBureau() {
-            return $this->requestData['BUREAU'];
+            return $this->data['BUREAU'];
         }
 
-        protected function default() {
-        }
+        protected abstract function default();
     }
