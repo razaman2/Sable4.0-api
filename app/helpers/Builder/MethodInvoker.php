@@ -13,9 +13,9 @@
             foreach($data as $key => $value) {
                 $name = $this->normalize($key);
 
-                if(method_exists($this, $name)) {
+                if(method_exists($this->object, $name)) {
                     call_user_func([
-                        $this,
+                        $this->object,
                         $name,
                     ], $value);
                 }
