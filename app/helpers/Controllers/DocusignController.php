@@ -107,7 +107,7 @@
         }
 
         public function getTemplate() {
-            return call_user_func(TemplateFactory::getTemplate(request()->input('companyId')), request()->input('data.contract.service'));
+            return call_user_func(TemplateFactory::getTemplate(request()->input('company.id')), request()->input('data.contract.service'));
         }
 
         public function getNotificationMethods($user) {
