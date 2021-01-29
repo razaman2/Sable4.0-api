@@ -9,7 +9,7 @@
             $this->object = $object;
         }
 
-        public function invoke($data, $payload) {
+        public function invoke($data, $payload = '') {
             foreach($data as $key => $value) {
                 $name = $this->normalize($key);
 
@@ -17,7 +17,7 @@
                     call_user_func([
                         $this->object,
                         $name,
-                    ], $payload ?? $value);
+                    ], $value, $payload);
                 }
             }
         }
