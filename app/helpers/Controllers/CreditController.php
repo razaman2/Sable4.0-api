@@ -1,6 +1,7 @@
 <?php
     namespace Helpers\Controllers;
 
+    use App\helpers\Credit\CreditTest;
     use App\Http\Controllers\Controller;
     use Helpers\Credit\CreditFactory;
     use Helpers\Credit\PullNew;
@@ -10,6 +11,10 @@
     class CreditController extends Controller
     {
         public function pullNew(Request $request) {
+            if($request->input('test')) {
+                return response()->json((new CreditTest())->execute($request->all()));
+            }
+
             $credit = new PullNew($request->all());
 
             $operation = CreditFactory::find($credit);
