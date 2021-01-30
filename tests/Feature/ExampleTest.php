@@ -24,6 +24,26 @@
         }
 
         /**
+        * @test
+        */
+        public function credit() {
+            $this->withoutExceptionHandling();
+            $this->post('/api/credit/new', [
+                'test' => false,
+                'options' => 'pass',
+                'auth' => [
+                    'username' => env('CREDIT_USERNAME'),
+                    'password' => env('CREDIT_PASSWORD')
+                ],
+                'data' => [
+                    'bureau' => 'efx',
+                    'contact' => [],
+                    'address' => []
+                ]
+            ])->dump();
+        }
+
+        /**
          * @test
          */
         public function adc() {
