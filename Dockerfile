@@ -5,8 +5,8 @@ RUN apt install g++ gcc libxml2 libxslt-dev npm zip unzip nginx -y
 RUN docker-php-ext-install pdo pdo_mysql soap
 
 #install and enable xdebug
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
+#RUN pecl install xdebug
+#RUN docker-php-ext-enable xdebug
 
 #install latest node version
 RUN npm cache clean -f
