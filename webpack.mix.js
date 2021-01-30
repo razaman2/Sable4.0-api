@@ -11,14 +11,23 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-.postCss('resources/css/app.css', 'public/css', [
+mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'public/css', [
     //
-])
-.options({
-    autoprefixer: { remove: false }
-})
-.vue({
+]).options({
+    autoprefixer: {remove: false}
+}).vue({
     extractStyles: true,
     globalStyles: false
+}).webpackConfig({
+    module: {
+        rules: [{
+            test: /\.tsx?$/,
+            loader: 'ts-loader',
+            options: {appendTsSuffixTo: [/\.vue$/]},
+            exclude: /node_modules/,
+        }]
+    },
+    resolve: {
+        extensions: ['*', '.js', '.jsx', '.vue', '.ts', '.tsx']
+    }
 });
