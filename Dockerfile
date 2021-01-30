@@ -4,6 +4,9 @@ RUN apt update -y
 RUN apt install g++ gcc libxml2 libxslt-dev npm zip unzip nginx -y
 RUN docker-php-ext-install pdo pdo_mysql soap
 
+RUN pecl install xdebug
+RUN docker-php-ext-enable xdebug
+
 COPY . /app
 
 COPY cloud-run/deploy/post_deploy.sh /etc/post_deploy.sh
