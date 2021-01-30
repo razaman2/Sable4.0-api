@@ -1,6 +1,6 @@
 <template>
     <h5>Docusign Test</h5>
-    <input class="btn" type="button" value="Send" @click="send"/>
+    <input class="btn" type="button" value="Sender" @click="send"/>
     <input class="btn" v-if="RegExp('sent').test(contract?.status)" type="button" value="View" @click="view"/>
     <hr>
     <div>
