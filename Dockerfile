@@ -4,8 +4,14 @@ RUN apt update -y
 RUN apt install g++ gcc libxml2 libxslt-dev npm zip unzip nginx -y
 RUN docker-php-ext-install pdo pdo_mysql soap
 
+#install and enable xdebug
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
+
+#install latest node version
+RUN npm cache clean -f
+RUN npm install -g n
+RUN n stable
 
 COPY . /app
 
@@ -25,7 +31,7 @@ WORKDIR /app
 
 RUN composer install --no-dev --ignore-platform-reqs
 
-RUN npm install
+RUN npm install --production
 
 RUN chmod +x /etc/post_deploy.sh
 
