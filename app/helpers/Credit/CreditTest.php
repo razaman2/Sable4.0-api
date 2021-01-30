@@ -2,6 +2,8 @@
 
     namespace App\helpers\Credit;
 
+    use Helpers\Builder\MethodInvoker;
+
     class CreditTest
     {
         private function getResponse($data) {
@@ -13,28 +15,24 @@
         }
 
         public function execute($data) {
-            $response = $this->getResponse($data);
-
-            if($data['options'] === 'pass') {
-                $this->pass($response);
-            } else if($data['options'] === 'fail') {
-                $this->fail($response);
-            } else {
-                $this->notFound($response);
-            }
-
-            return $response;
+            return (new MethodInvoker($this, true))->invoke($data, $this->getResponse($data));
         }
 
-        public function pass(&$data) {
-            $data['score'] = rand(600, 850);
+        private function options($data, $response) {
+            $option = (new MethodInvoker($this, true))->invoke([$data => $data]);
+
+            return array_merge($response, ['score' => $option->{$data}]);
         }
 
-        public function fail(&$data) {
-            $data['score'] = rand(400, 599);
+        private function pass() {
+            return rand(600, 850);
         }
 
-        public function notFound(&$data) {
-            $data['score'] = 0;
+        private function fail() {
+            return rand(400, 599);
+        }
+
+        private function notfound() {
+            return 0;
         }
     }
