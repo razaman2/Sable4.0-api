@@ -29,7 +29,7 @@
         public function credit() {
             $this->withoutExceptionHandling();
             $this->post('/api/credit/new', [
-                'test' => false,
+                'test' => true,
                 'options' => 'pass',
                 'auth' => [
                     'username' => env('CREDIT_USERNAME'),
