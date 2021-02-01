@@ -107,7 +107,13 @@
         }
 
         public function getTemplate() {
-            return call_user_func(TemplateFactory::getTemplate(request()->input('company.id')), request()->input('data.contract.service'));
+            $service = request()->input('data.contract.service');
+
+            try {
+                return call_user_func(TemplateFactory::getTemplate(request()->input('company.id')), $service);
+            } catch(\Exception $e) {
+                throw new \Exception("Contract Service ($service) does not exist.");
+            }
         }
 
         public function getNotificationMethods($user) {
