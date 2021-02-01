@@ -15,7 +15,9 @@
         }
 
         public function execute($data) {
-            return (new MethodInvoker($this, true))->invoke($data, $this->getResponse($data));
+            $response = (new MethodInvoker($this, true))->invoke($data, $this->getResponse($data));
+
+            return $response->options;
         }
 
         private function options($data, $response) {
