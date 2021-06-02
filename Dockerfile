@@ -27,9 +27,9 @@ RUN chown -R www-data: /app
 
 WORKDIR /app
 
-RUN composer install --ignore-platform-reqs
+RUN composer install --no-dev --ignore-platform-reqs
 
-RUN npm install
+RUN npm install --only=production
 
 RUN chmod +x /etc/post_deploy.sh
 
