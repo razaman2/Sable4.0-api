@@ -35,7 +35,11 @@
     });
 
     Route::get('/rep-list', function(ADCAuth $auth) {
-        $dealer = new GetRepList($auth);
+        $a = new ADCAuth('829220003', '1Stop202!', '5223');
+
+        $dealer = new GetRepList($a);
+
+        //$dealer = new GetRepList($auth);
 
         dump($dealer->get());
     });
@@ -61,7 +65,9 @@
             "none" => AccountTypeEnum::VALUE_NOT_SET,
         ];
 
-        $dealer = new GetPackages($auth);
+        $a = new ADCAuth('829220003', '1Stop202!', '5223');
+
+        $dealer = new GetPackages($a);
 
         dump($dealer->get($filters[$filter]));
     });
@@ -73,13 +79,21 @@
     });
 
     Route::get('/best-practices/{id}', function(ADCAuth $auth, $id) {
-        $dealer = new GetBestPractices($auth);
+        $a = new ADCAuth('829220003', '1Stop202!', '5223');
+
+        $dealer = new GetBestPractices($a);
+
+        //$dealer = new GetBestPractices($auth);
 
         dump($dealer->get($id));
     });
 
     Route::get('/zones/{id}', function(ADCAuth $auth, $id) {
-        $dealer = new GetDevices($auth);
+        $a = new ADCAuth('829220003', '1Stop202!', '5223');
+
+        $dealer = new GetDevices($a);
+
+        //$dealer = new GetDevices($auth);
 
         dump($dealer->getDeviceList($id));
     });
@@ -141,7 +155,7 @@
         ];
 
         $data = [
-            'passcode'=>'passcodeEX',
+            'passcode' => 'passcodeEX',
             'signers' => [
                 $salesperson,
                 [
@@ -159,7 +173,7 @@
                     'phone' => '(222) 222-2222',
                 ],
             ],
-            'contacts'=>[
+            'contacts' => [
                 [
                     'firstName' => 'EMerAinsley',
                     'lastName' => 'Clarke',
@@ -178,9 +192,9 @@
                 ],
             ],
             'salesperson' => $salesperson,
-            'event'=>[
+            'event' => [
                 'date' => '12/3/2020',
-                'time' => '05:25'
+                'time' => '05:25',
             ],
             'property' => [
                 'address' => [
@@ -191,9 +205,9 @@
                     'zip' => '08857',
                     'type' => 'commercial',
                     'name' => 'Johns Pizza',
-                    'phone' => '888-987-8989'
+                    'phone' => '888-987-8989',
                 ],
-                'companyName' => 'Sable 4.0'
+                'companyName' => 'Sable 4.0',
             ],
             'contract' => [
                 'selections' => [
@@ -213,123 +227,123 @@
                     'abnormal temp detection',
                     'carbon monoxide detection',
                 ],
-                'length'=> '36',
-                'paymentDuration'=>'quarterly'
+                'length' => '36',
+                'paymentDuration' => 'quarterly',
             ],
             'purchase' => [
                 'extendedServicePlan' => true,
             ],
             'equipment' => [
-                'total'=>'575',
-               'list'=>[
-                   [
-                       'name' => 'first motion',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'smoke 2',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'motion 3',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'smoke 4',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'motion 5',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => '6 smoke',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'motion 7',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => '8th one',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'last',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ],
-                   [
-                       'name' => 'extra',
-                       'quantity' => '5',
-                       'price' => '7',
-                       'total' => '12',
-                       'actual' => '12',
-                   ]
-               ]
+                'total' => '575',
+                'list' => [
+                    [
+                        'name' => 'first motion',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'smoke 2',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'motion 3',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'smoke 4',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'motion 5',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => '6 smoke',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'motion 7',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => '8th one',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'last',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                    [
+                        'name' => 'extra',
+                        'quantity' => '5',
+                        'price' => '7',
+                        'total' => '12',
+                        'actual' => '12',
+                    ],
+                ],
             ],
             'billing' => [
                 'address' => [
-                    'address1'=>'988',
-                    'city'=>'old bridge',
-                    'state'=>'nj',
-                    'zip'=>'12345',
+                    'address1' => '988',
+                    'city' => 'old bridge',
+                    'state' => 'nj',
+                    'zip' => '12345',
                 ],
-                'activationFee'=>'333',
-                'installLaborCost'=>'43',
-                'discounts'=>'888',
-                'equipmentFee'=>'333',
-                'taxAvalara'=>'555',
-                'totalBeforeTax'=>'899',
-                'rmr'=>'10',
-                'total'=>'988',
-                'tax'=>'342',
+                'activationFee' => '333',
+                'installLaborCost' => '43',
+                'discounts' => '888',
+                'equipmentFee' => '333',
+                'taxAvalara' => '555',
+                'totalBeforeTax' => '899',
+                'rmr' => '10',
+                'total' => '988',
+                'tax' => '342',
             ],
             'payments' => [
                 [
                     'type' => 'credit card',
                     'payment' => [
-                            'cardNumber' => '43',
-                            'expiration' => '12/43',
-                            'cvv' => '123',
-                            'type' => '123',
-                    ]
+                        'cardNumber' => '43',
+                        'expiration' => '12/43',
+                        'cvv' => '123',
+                        'type' => '123',
+                    ],
                 ],
                 [
-                    'type'=>'ach',
+                    'type' => 'ach',
                     'payment' => [
-                            'routingNumber' => '43',
-                            'accountNumber' => '43',
-                            'bankName' => '43',
-                    ]
-                ]
-            ]
+                        'routingNumber' => '43',
+                        'accountNumber' => '43',
+                        'bankName' => '43',
+                    ],
+                ],
+            ],
         ];
 
         $template = new SecurityPacket($docusign, $data);
@@ -340,8 +354,24 @@
             (new EnvelopeEvent())->setEnvelopeEventStatusCode("sent"),
             (new EnvelopeEvent())->setEnvelopeEventStatusCode("completed"),
         ])->setRecipientEvents([
-            (new RecipientEvent())->setRecipientEventStatusCode('completed')
+            (new RecipientEvent())->setRecipientEventStatusCode('completed'),
         ]));
 
         return Inertia::render('contract', ["contract" => json_decode($docusign->send($envelope))]);
+    });
+
+    // Reactive-Vue
+
+    Route::get('/reactive-vue', function() {
+        return inertia('TestVue', [
+            'state' => [
+                'name' => 'James Brown',
+                'age' => 60,
+                'datetime' => now()->toString(),
+            ],
+        ]);
+    });
+
+    Route::post('/reactive-vue', function(Request $request) {
+        dump($request->all());
     });

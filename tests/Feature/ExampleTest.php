@@ -46,6 +46,15 @@
         /**
          * @test
          */
+        public function loading() {
+            $class = new \ReflectionClass(\DateTime::class);
+
+            dump($class->getMethod('not-exist'));
+        }
+
+        /**
+         * @test
+         */
         public function adc() {
             $auth = new ADCAuth(env('ADC_USERNAME'), env('ADC_PASSWORD'));
 
@@ -58,91 +67,95 @@
          * @test
          */
         public function docusign_send() {
-            $auth = DocusignAuthFactory::authenticate([
-                'Username' => env('DOCUSIGN_DEV_USERNAME'),
-                'Password' => env('DOCUSIGN_DEV_PASSWORD'),
-                'IntegratorKey' => env('DOCUSIGN_DEV_INTEGRATOR_KEY'),
-            ])->setHost(env('DOCUSIGN_DEV_HOST'));
+            $this->withoutExceptionHandling();
+            $this->post('/api/credit/pull-new', [])->dump();
 
-            $docusign = new Docusign($auth);
-
-            $salesperson = [
-                'role' => 'salesperson',
-                'firstName' => 'John',
-                'lastName' => 'Doe',
-                'email' => 'john.doe@sablecrm.com',
-                'phone' => '(333) 333-3333',
-                'licenseNumber' => '100-200-300',
-            ];
-
-            $data = [
-                'signers' => [
-                    $salesperson,
-                    [
-                        'role' => 'primary',
-                        'firstName' => 'Ainsley',
-                        'lastName' => 'Clarke',
-                        'email' => 'ainsley.clarke@guardme.com',
-                        'phone' => '(111) 111-1111',
-                    ],
-                    //[
-                    //    'role' => 'secondary',
-                    //    'firstName' => 'Bruce',
-                    //    'lastName' => 'Wilson',
-                    //    'email' => 'brucewilson1103@gmail.com',
-                    //    'phone' => '(222) 222-2222',
-                    //],
-                ],
-                'salesperson' => $salesperson,
-                'property' => [
-                    'address' => [
-                        'address1' => '8323 Dietrich Fords',
-                        'address2' => 'Building 1',
-                        'city' => 'Old Bridge',
-                        'state' => 'NJ',
-                        'zip' => '08857',
-                        'type' => 'commercial'
-                    ],
-                    'companyName' => 'Johns Pizza',
-                ],
-                'contract' => [
-                    'selections' => [
-                        'two way voice',
-                        'cellular back-up',
-                        'cellular primary',
-                        'landline telephone',
-                        'alarm system monitoring',
-                        'burglary',
-                        'flood',
-                        'other',
-                        'hold up',
-                        'medical emergency',
-                        'internet primary',
-                        'internet back-up',
-                        'fire/smoke alarm',
-                        'abnormal temp detection',
-                        'carbon monoxide detection',
-                    ],
-                    'length' => '36',
-                    'paymentDuration' => 'quarterly'
-                ],
-                'purchase' => [
-                    'extendedServicePlan' => true,
-                ],
-                'billing' => [
-                    'rmr' => 54.95,
-                    'activationFee' => 220.50,
-                    'installLaborCost' => 1385.22
-                ]
-            ];
-
-            $template = new SecurityPacket($docusign, $data);
-
-            $envelope = $template->configure($data);
-
-            $envelope->setStatus('sent');
-
-            dump($docusign->send($envelope));
+            //$auth = DocusignAuthFactory::authenticate([
+            //    'Username' => env('DOCUSIGN_DEV_USERNAME'),
+            //    'Password' => env('DOCUSIGN_DEV_PASSWORD'),
+            //    'IntegratorKey' => env('DOCUSIGN_DEV_INTEGRATOR_KEY'),
+            //])->setHost(env('DOCUSIGN_DEV_HOST'));
+            //
+            //$docusign = new Docusign($auth);
+            //
+            //$salesperson = [
+            //    'role' => 'salesperson',
+            //    'firstName' => 'John',
+            //    'lastName' => 'Doe',
+            //    'email' => 'john.doe@sablecrm.com',
+            //    'phone' => '(333) 333-3333',
+            //    'licenseNumber' => '100-200-300',
+            //];
+            //
+            //$data = [
+            //    'signers' => [
+            //        $salesperson,
+            //        [
+            //            'role' => 'primary',
+            //            'firstName' => 'Ainsley',
+            //            'lastName' => 'Clarke',
+            //            'email' => 'ainsley.clarke@guardme.com',
+            //            'phone' => '(111) 111-1111',
+            //        ],
+            //        //[
+            //        //    'role' => 'secondary',
+            //        //    'firstName' => 'Bruce',
+            //        //    'lastName' => 'Wilson',
+            //        //    'email' => 'brucewilson1103@gmail.com',
+            //        //    'phone' => '(222) 222-2222',
+            //        //],
+            //    ],
+            //    'salesperson' => $salesperson,
+            //    'property' => [
+            //        'address' => [
+            //            'address1' => '8323 Dietrich Fords',
+            //            'address2' => 'Building 1',
+            //            'city' => 'Old Bridge',
+            //            'state' => 'NJ',
+            //            'zip' => '08857',
+            //            'type' => 'commercial'
+            //        ],
+            //        'companyName' => 'Johns Pizza',
+            //    ],
+            //    'contract' => [
+            //        'service' => 'Golden Eye',
+            //        'selections' => [
+            //            'two way voice',
+            //            'cellular back-up',
+            //            'cellular primary',
+            //            'landline telephone',
+            //            'alarm system monitoring',
+            //            'burglary',
+            //            'flood',
+            //            'other',
+            //            'hold up',
+            //            'medical emergency',
+            //            'internet primary',
+            //            'internet back-up',
+            //            'fire/smoke alarm',
+            //            'abnormal temp detection',
+            //            'carbon monoxide detection',
+            //        ],
+            //        'length' => '36',
+            //        'paymentDuration' => 'quarterly'
+            //    ],
+            //    'purchase' => [
+            //        'extendedServicePlan' => true,
+            //    ],
+            //    'billing' => [
+            //        'rmr' => 54.95,
+            //        'activationFee' => 220.50,
+            //        'installLaborCost' => 1385.22
+            //    ]
+            //];
+            //
+            //$template = new SecurityPacket($docusign, $data);
+            //
+            //$envelope = $template->configure($data);
+            //
+            //$envelope->setStatus('sent');
+            //
+            //dump($docusign->send($envelope));
         }
 
         /**

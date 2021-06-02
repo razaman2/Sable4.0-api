@@ -29,7 +29,7 @@
     Route::prefix('phone')->group(function() {
         Route::post('/validate', 'Helpers\Controllers\TwilioController@lookup');
 
-        //Route::post('/send', 'Helpers\Controllers\TwilioController@text');
+        Route::post('/text', 'Helpers\Controllers\TwilioController@text');
     });
 
     Route::prefix('credit')->group(function() {
